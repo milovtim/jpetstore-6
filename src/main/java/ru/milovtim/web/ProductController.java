@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ru.milovtim.domain.Category;
 import ru.milovtim.domain.Product;
 import ru.milovtim.service.CatalogService;
+import ru.milovtim.service.Spring3CorsFilter;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -27,6 +28,7 @@ public class ProductController {
 
     @RequestMapping(value = "/cat-list", method = GET)
     @ResponseBody()
+    @Spring3CorsFilter
     public List<Category> categoryList() {
         return this.catalogService.getCategoryList();
     }
@@ -34,6 +36,7 @@ public class ProductController {
 
     @RequestMapping(value = "/prod-list", method = GET)
     @ResponseBody()
+    @Spring3CorsFilter
     public List<Product> prodList(@RequestParam("cat-id") String catId) {
         return this.catalogService.getProductListByCategory(catId);
     }

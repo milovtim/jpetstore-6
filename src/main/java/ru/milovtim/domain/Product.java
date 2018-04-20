@@ -17,11 +17,6 @@ package ru.milovtim.domain;
 
 import java.io.Serializable;
 
-/**
- * The Class Product.
- *
- * @author Eduardo Macarron
- */
 public class Product implements Serializable {
 
   private static final long serialVersionUID = -7492639752670189553L;
@@ -65,7 +60,10 @@ public class Product implements Serializable {
 
   @Override
   public String toString() {
-    return getName();
+    return "Product{" +
+        "productId='" + productId + '\'' +
+        ", categoryId='" + categoryId + '\'' +
+        ", name='" + name + '\'' +
+        '}';
   }
-
 }

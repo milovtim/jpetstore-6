@@ -21,7 +21,7 @@
           p:password="1a26d1g26d1gesb?e7desb?e7d" />
 
 
-    <jdbc:initialize-database>
+    <jdbc:initialize-database enabled="false">
         <jdbc:script location="classpath:database/demo-schema.sql"/>
         <jdbc:script location="classpath:database/demo-dataload.sql"/>
     </jdbc:initialize-database>
@@ -50,4 +50,7 @@
 
     <mvc:annotation-driven />
     <mvc:default-servlet-handler/>
+    <mvc:interceptors>
+        <bean class="ru.milovtim.service.Spring3CorsFilterHandlerInterceptor" />
+    </mvc:interceptors>
 </beans>
