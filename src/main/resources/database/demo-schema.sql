@@ -1,5 +1,5 @@
 create table IF NOT EXISTS category (
-	catid varchar(10) not null,
+	catid varchar(80) not null,
 	name varchar(80) null,
 	descn varchar(255) null,
 	constraint pk_category primary key (catid)

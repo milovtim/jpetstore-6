@@ -5,6 +5,7 @@ import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
 import {NgxDatatableModule} from "@swimlane/ngx-datatable";
 import {HttpClientModule} from "@angular/common/http";
+import {ModalModule} from "ngx-bootstrap";
 
 
 @NgModule({
@@ -13,8 +14,9 @@ import {HttpClientModule} from "@angular/common/http";
   ],
   imports: [
     NgxDatatableModule,
+    ModalModule.forRoot(),
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

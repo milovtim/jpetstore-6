@@ -23,4 +23,10 @@
     FROM CATEGORY
   </select>
 
+  <insert id="createCategory" parameterType="Category">
+    INSERT INTO
+      category(catid, name, descn)
+    VALUES
+      (#{categoryId}, #{name}, #{description})
+  </insert>
 </mapper>

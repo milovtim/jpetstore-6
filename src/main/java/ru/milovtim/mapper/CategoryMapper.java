@@ -7,8 +7,9 @@ import ru.milovtim.domain.Category;
 
 public interface CategoryMapper {
 
-  List<Category> getCategoryList();
+    List<Category> getCategoryList();
 
-  Category getCategory(@Param("categoryId") String categoryId);
+    Category getCategory(@Param("categoryId") String categoryId);
 
+    void createCategory(Category category);
 }
