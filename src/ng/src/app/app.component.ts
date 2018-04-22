@@ -1,10 +1,6 @@
-import {
-  Component, DoCheck, IterableDiffer, IterableDiffers, OnChanges, OnInit, SimpleChanges,
-  TemplateRef
-} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {BsModalRef, BsModalService} from "ngx-bootstrap";
-import {Observable} from "rxjs/Observable";
 import "rxjs/add/observable/empty";
 
 @Component({
@@ -12,55 +8,47 @@ import "rxjs/add/observable/empty";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, OnChanges, DoCheck {
+export class AppComponent implements OnInit {
+  public static API_URL = 'http://localhost:8080/ajax';
+
+  @ViewChild('prodDataTable') prodDataTable: any;
 
   title = 'Petshop';
-
   catItems: Array<any> = [];
   catColumns = [
     { prop: 'categoryId' },
     { name: 'name' },
     { name: 'description' }
   ];
-  prodItems: any = [];
-  prodColumns = [
-    { prop: 'productId', "flexGrow": 1 },
-    { prop: 'categoryId', "flexGrow": 1 },
-    { prop: 'name', "flexGrow": 2 },
-    { prop: 'description', "flexGrow": 3 }
-  ];
+  prodItems: Array<any> = [];
 
   private selectedCat: string;
-  private catDiffer: IterableDiffer<any>;
+  catAddModal: boolean;//для переключения режима модального окна: сохранить кат-ю или продукт
 
   constructor(private httpClient: HttpClient,
-              private iterDiffers: IterableDiffers,
-              private modalService: BsModalService) {
-    this.catDiffer = this.iterDiffers.find(this.catItems).create((index, item: any) => item.categoryId);
-  }
+              private modalService: BsModalService) {}
 
   ngOnInit(): void {
-    this.httpClient.get('http://localhost:8080/ajax/cat')
+    this.loadCatItems();
+  }
+
+  private loadCatItems(): void {
+    this.httpClient.get(`${AppComponent.API_URL}/cat`)
       .subscribe(data => {
         this.catItems = data as Array<any>;
       });
   }
 
-  ngDoCheck(): void {
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    // let ch = this.catDiffer.diff(this.catItems);
-    // if (ch)
-    //   ch.forEachAddedItem(record => console.log(record));
+  private loadProdItems(): void {
+    this.httpClient.get(`${AppComponent.API_URL}/cat/${this.selectedCat}/prod`)
+      .subscribe(data => this.prodItems = data as Array<any>);
   }
 
   selectCat({selected}) {
     let catId = selected[0].categoryId;
     if (catId) {
       this.selectedCat = catId;
-      this.httpClient.get('http://localhost:8080/ajax/prod-list', {params: {'cat-id': catId}})
-        .subscribe(data => this.prodItems = data);
+      this.loadProdItems();
     }
   }
 
@@ -69,33 +57,43 @@ export class AppComponent implements OnInit, OnChanges, DoCheck {
 
   openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template);
-    // this.addCatArrItem({ 'categoryId': "fake", name: 'name fake', 'description': "descr fake" });
   }
 
   saveCat(name, descr) {
     console.log(`save category: ${name}, ${descr}`);
-    this.httpClient.post('http://localhost:8080/ajax/cat',
-      {"name": name, "description": descr},
-      {observe: 'body', responseType: 'json'}
-    )
-      .mergeMap((respBody: any, index) => {
-            this.modalRef.hide();
-            let newEntityLocation = respBody.location;
-            if (newEntityLocation)
-              return this.httpClient.get(newEntityLocation);
-            else
-              return Observable.empty<any>();
-      })
+
+    this.httpClient.post(`${AppComponent.API_URL}/cat`, {"name": name, "description": descr})
       .subscribe(data => {
         if (data) {
-          this.addCatArrItem(data);
+          this.modalRef.hide();
+          this.loadCatItems();
         }
       }, error => console.log(error));
   }
 
-  private addCatArrItem(item) {
-    let newArr = this.catItems.slice();
-    newArr.push(item);
-    this.catItems = newArr;
+  saveProd(name: String, descr: String) {
+    console.log(`save product: ${name}, ${descr}`);
+
+    this.httpClient
+      .post(`${AppComponent.API_URL}/prod`, {"categoryId": this.selectedCat, "name": name, "description": descr})
+      .subscribe(data => {
+        if (data) {
+          this.modalRef.hide();
+          this.loadProdItems();
+        }
+      }, error => console.log(error));
+  }
+
+  toggleExpandRow(row) {
+    this.prodDataTable.rowDetail.toggleExpandRow(row);
+  }
+
+  editProd(prodId: number, name: string, descr: string) {
+    if (prodId && !isNaN(+prodId)) {
+      let productId = Number(prodId);
+      console.log(`Update product ${productId}`);
+      this.httpClient.post(`${AppComponent.API_URL}/prod/edit/${productId}`, {"name": name, "description": descr})
+        .subscribe(() => this.loadProdItems());
+    }
   }
 }

@@ -36,4 +36,18 @@
     WHERE lower(name) like #{value}
   </select>
 
+
+  <insert id="createProduct" parameterType="Product">
+    <selectKey keyProperty="productId" keyColumn="productId" order="AFTER" resultType="java.lang.Integer">
+      SELECT currval('productIdSeq');
+    </selectKey>
+    INSERT INTO product(productid, category, name, descn)
+    VALUES (nextval('productidseq'), #{categoryId}, #{name}, #{description})
+  </insert>
+
+  <update id="editProductNameAndDescription">
+    UPDATE product
+    SET "name" = #{name}, "descn" = #{description}
+    WHERE productid = #{productId}
+  </update>
 </mapper>

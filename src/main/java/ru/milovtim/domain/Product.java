@@ -21,17 +21,17 @@ public class Product implements Serializable {
 
   private static final long serialVersionUID = -7492639752670189553L;
 
-  private String productId;
+  private Integer productId;
   private String categoryId;
   private String name;
   private String description;
 
-  public String getProductId() {
+  public Integer getProductId() {
     return productId;
   }
 
-  public void setProductId(String productId) {
-    this.productId = productId.trim();
+  public void setProductId(Integer productId) {
+    this.productId = productId;
   }
 
   public String getCategoryId() {

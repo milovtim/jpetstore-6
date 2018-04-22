@@ -5,9 +5,11 @@ create table IF NOT EXISTS category (
 	constraint pk_category primary key (catid)
 );
 
+CREATE SEQUENCE IF NOT EXISTS productIdSeq START 1;
+
 create table IF NOT EXISTS product (
-    productid varchar(10) not null,
-    category varchar(10) not null,
+    productid INTEGER not null,
+    category varchar(80) not null,
     name varchar(80) null,
     descn varchar(255) null,
     constraint pk_product primary key (productid),

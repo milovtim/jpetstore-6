@@ -17,6 +17,7 @@ package ru.milovtim.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,13 @@ public class CatalogService {
         return cat;
     }
 
+    public Product addProductToCategory(Product product) {
+        Objects.requireNonNull(product, "Cant add null product");
+        Objects.requireNonNull(product.getCategoryId(), "Cant add product in null category");
+        productMapper.createProduct(product);
+        return product;
+    }
+
     public Category getCategory(String categoryId) {
         return categoryMapper.getCategory(categoryId);
     }
@@ -68,5 +76,9 @@ public class CatalogService {
             products.addAll(productMapper.searchProductList("%" + keyword.toLowerCase() + "%"));
         }
         return products;
+    }
+
+    public void editProduct(Integer prodId, String name, String description) {
+        productMapper.editProductNameAndDescription(prodId, name, description);
     }
 }

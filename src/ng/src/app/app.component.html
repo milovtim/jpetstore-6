@@ -19,7 +19,7 @@
       <ngx-datatable-footer>
         <ng-template ngx-datatable-footer-template>
           <div style="margin-left: 10px">
-           <button class="btn btn-primary" (click)="openModal(addModalTemplate)">Add category</button>
+           <button class="btn btn-primary" (click)="catAddModal = true; openModal(addModalTemplate)">Add category</button>
           </div>
         </ng-template>
       </ngx-datatable-footer>
@@ -29,13 +29,66 @@
 
   <div class="col-lg-7">
     <h3>Products</h3>
-    <ngx-datatable class="material striped"
-                   [messages]="{'emptyMessage': 'Choose any category'}"
+    <ngx-datatable class="material striped" #prodDataTable
+                   [messages]="{'emptyMessage': 'No products found or no category chosen'}"
                    [columnMode]="'flex'"
                    [headerHeight]="60"
+                   [footerHeight]="70"
                    [rowHeight]="50"
-                   [rows]="prodItems"
-                   [columns]="prodColumns">
+                   [rows]="prodItems">
+      <ngx-datatable-footer>
+        <ng-template ngx-datatable-footer-template>
+          <div style="margin-left: 10px">
+            <button class="btn btn-primary"
+                    *ngIf="selectedCat"
+                    (click)="catAddModal = false; openModal(addModalTemplate)">Add Product</button>
+          </div>
+        </ng-template>
+      </ngx-datatable-footer>
+      <ngx-datatable-row-detail [rowHeight]="150" #myDetailRow>
+        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+          <div class="row">
+            <div class="col-md-9">
+              <div><strong>Product: {{row.productId}}</strong></div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="prodNameEdit">Name</span>
+                </div>
+                <input type="text" class="form-control" value="{{row.name}}" #prodEditName>
+              </div>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="prodDescrEdit">Description</span>
+                </div>
+                <input type="text" class="form-control" value="{{row.description}}" #prodEditDescr>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <button class="btn btn-primary"
+                      (click)="editProd(row.productId, prodEditName.value, prodEditDescr.value)"
+                      style="margin-top: 10px">Save</button>
+            </div>
+          </div>
+        </ng-template>
+      </ngx-datatable-row-detail>
+      <ngx-datatable-column
+        [width]="20"
+        [flexGrow]="1"
+        [sortable]="false"
+        [draggable]="false"
+        [canAutoResize]="false">
+        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+          <a href="javascript:void(0)"
+            [class.datatable-icon-right]="!expanded"
+            [class.datatable-icon-down]="expanded"
+            title="Expand/Collapse Row"
+            (click)="toggleExpandRow(row)"></a>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="productId" [flexGrow]="1"></ngx-datatable-column>
+      <ngx-datatable-column name="categoryId" [flexGrow]="1"></ngx-datatable-column>
+      <ngx-datatable-column name="name" [flexGrow]="2" ></ngx-datatable-column>
+      <ngx-datatable-column name="description" [flexGrow]="4" ></ngx-datatable-column>
     </ngx-datatable>
   </div>
 </div>
@@ -50,14 +103,15 @@
   <div class="modal-body">
     <div class="input-group">
       <div class="input-group-prepend">
-        <span class="input-group-text" id="">Entity name and description</span>
+        <span class="input-group-text" id="">Name and description</span>
       </div>
       <input type="text" class="form-control" #entityName />
       <input type="text" class="form-control" #entityDescription />
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="saveCat(entityName.value, entityDescription.value)">Save changes</button>
+    <button *ngIf="catAddModal" type="button" class="btn btn-primary" (click)="saveCat(entityName.value, entityDescription.value)">Save category</button>
+    <button *ngIf="!catAddModal" type="button" class="btn btn-primary" (click)="saveProd(entityName.value, entityDescription.value)">Save product</button>
     <button type="button" class="btn btn-secondary" (click)="modalRef.hide()">Close</button>
   </div>
 </ng-template>

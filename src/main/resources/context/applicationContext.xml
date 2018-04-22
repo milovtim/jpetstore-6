@@ -51,7 +51,4 @@
 
     <mvc:annotation-driven />
     <mvc:default-servlet-handler/>
-    <!--<mvc:interceptors>
-        <bean class="ru.milovtim.service.Spring3CorsHandlerInterceptor" />
-    </mvc:interceptors>-->
 </beans>
