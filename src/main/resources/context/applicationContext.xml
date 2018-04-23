@@ -51,4 +51,8 @@
 
     <mvc:annotation-driven />
     <mvc:default-servlet-handler/>
+
+    <mvc:resources mapping="/images" location="images" />
+    <mvc:resources mapping="/app" location="dist" />
+
 </beans>
