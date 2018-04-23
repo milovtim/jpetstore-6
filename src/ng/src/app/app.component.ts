@@ -2,6 +2,7 @@ import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {BsModalRef, BsModalService} from "ngx-bootstrap";
 import "rxjs/add/observable/empty";
+import {environment} from "../environments/environment";
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,7 @@ import "rxjs/add/observable/empty";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  public static API_URL = 'http://localhost:8080/ajax';
+  public static API_URL = environment.apiUrl;
 
   @ViewChild('prodDataTable') prodDataTable: any;
 

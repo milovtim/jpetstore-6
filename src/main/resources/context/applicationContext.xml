@@ -14,12 +14,14 @@
      http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd
      http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+    <context:property-placeholder location="classpath:context/application.properties"/>
+
     <bean id="dataSource"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource"
           p:driverClassName="org.postgresql.Driver"
-          p:url="jdbc:postgresql://192.168.99.100:30331/kubernetes_django"
-          p:username="django"
-          p:password="1a26d1g26d1gesb?e7desb?e7d" />
+          p:url="jdbc:postgresql://${dataSource.url}"
+          p:username="${dataSource.username}"
+          p:password="${dataSource.password}" />
 
 
     <jdbc:initialize-database enabled="#{environment.acceptsProfiles('db-init')}">
